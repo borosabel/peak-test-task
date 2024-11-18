@@ -1,14 +1,20 @@
 import { fetchStockDetails } from "@/service/alphaVantageApi";
 
 interface StockDetailsPageProps {
-  params: { symbol: string };
+    params: Promise<{ symbol: string }>;
 }
 
 const StockDetailsPage = async ({ params }: StockDetailsPageProps) => {
-  const symbol = (await params).symbol;
-  const stockDetails = await fetchStockDetails(symbol);
+    const { symbol } = await params;
 
-  return <div>{stockDetails.price}</div>;
+    const stockDetails = await fetchStockDetails(symbol);
+
+    return (
+        <div>
+            <h1>Stock: {stockDetails.symbol}</h1>
+            <p>Price: {stockDetails.price}</p>
+        </div>
+    );
 };
 
 export default StockDetailsPage;
