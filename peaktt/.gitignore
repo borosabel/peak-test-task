@@ -17,6 +17,8 @@
 /.next/
 /out/
 
+/.idea/
+
 # production
 /build
 
@@ -30,7 +32,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+.env
 
 # vercel
 .vercel
