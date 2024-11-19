@@ -4,10 +4,9 @@ import {
   StockSuggestion,
 } from "@/types/alphaVantageTypes";
 
-export const BASE_URL = process.env.ALPHAVANTAGE_BASE_URL;
+export const BASE_URL = process.env.NEXT_PUBLIC_ALPHAVANTAGE_BASE_URL;
 export const API_KEY = process.env.ALPHAVANTAGE_API_KEY;
 
-// Validate environment variables
 if (!BASE_URL) {
   throw new Error("Environment variable ALPHAVANTAGE_BASE_URL is not set.");
 }
