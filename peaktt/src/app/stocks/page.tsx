@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDebounceValue } from "usehooks-ts";
 import SuggestionsList from "@/components/SuggestionsList";
 
 const StocksPage: React.FC = () => {
@@ -13,46 +14,39 @@ const StocksPage: React.FC = () => {
       : "";
 
   const [query, setQuery] = useState(initialQuery);
-  const [submittedQuery, setSubmittedQuery] = useState(initialQuery);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const [debouncedQuery, setDebouncedQuery] = useDebounceValue(query, 400);
 
-    const currentParams =
-      typeof window !== "undefined"
-        ? new URLSearchParams(window.location.search)
-        : new URLSearchParams();
-
-    if (query) {
-      currentParams.set("query", query);
+  React.useEffect(() => {
+    if (debouncedQuery) {
+      const currentParams = new URLSearchParams(window.location.search);
+      currentParams.set("query", debouncedQuery);
+      router.replace(`/stocks?${currentParams.toString()}`);
     } else {
-      currentParams.delete("query");
+      router.replace(`/stocks`);
     }
+  }, [debouncedQuery, router]);
 
-    router.replace(`/stocks?${currentParams.toString()}`);
-    setSubmittedQuery(query);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setQuery(newValue);
+    setDebouncedQuery(newValue);
   };
 
   return (
     <div className="max-w-2xl mx-auto p-5">
       <h1 className="text-2xl font-bold mb-5">Stock Search</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => e.preventDefault()}>
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Search for stocks"
           className="w-full p-2 border border-gray-300 rounded-md"
         />
-        <button
-          type="submit"
-          className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          Search
-        </button>
       </form>
 
-      {submittedQuery && <SuggestionsList query={submittedQuery} />}
+      {debouncedQuery && <SuggestionsList query={debouncedQuery} />}
     </div>
   );
 };
