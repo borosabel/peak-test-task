@@ -5,7 +5,7 @@ import {
 } from "@/types/alphaVantageTypes";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_ALPHAVANTAGE_BASE_URL;
-export const API_KEY = process.env.ALPHAVANTAGE_API_KEY;
+export const API_KEY = process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY;
 
 if (!BASE_URL) {
   throw new Error("Environment variable ALPHAVANTAGE_BASE_URL is not set.");

@@ -1,22 +1,44 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { fetchStockSuggestions } from "@/service/alphaVantageApi";
 import { StockSuggestion } from "@/types/alphaVantageTypes";
+import StockSuggestionItem from "@/components/StockSuggestionItem";
 
 interface SuggestionsListProps {
   query: string;
 }
 
-const SuggestionsList = async ({ query }: SuggestionsListProps) => {
-  let suggestions: StockSuggestion[] = [];
+const SuggestionsList: React.FC<SuggestionsListProps> = ({ query }) => {
+  const [suggestions, setSuggestions] = useState<StockSuggestion[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  try {
-    suggestions = await fetchStockSuggestions(query);
-  } catch (error) {
-    console.error("Error fetching stock suggestions:", error);
-    return (
-      <div className="text-red-500 mt-5">
-        Failed to fetch stock suggestions. Please try again later.
-      </div>
-    );
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const results = await fetchStockSuggestions(query);
+        setSuggestions(results);
+      } catch (err) {
+        console.error("Error fetching stock suggestions:", err);
+        setError("Failed to fetch stock suggestions. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSuggestions();
+  }, [query]);
+
+  if (isLoading) {
+    return <p className="text-gray-500 mt-5">Loading suggestions...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500 mt-5">{error}</p>;
   }
 
   if (suggestions.length === 0) {
@@ -31,10 +53,7 @@ const SuggestionsList = async ({ query }: SuggestionsListProps) => {
   return (
     <ul className="list-none mt-5">
       {suggestions.map((suggestion) => (
-        <li key={suggestion.symbol} className="py-2 border-b border-gray-300">
-          <span className="font-semibold">{suggestion.symbol}</span> -{" "}
-          {suggestion.name}
-        </li>
+        <StockSuggestionItem key={suggestion.symbol} suggestion={suggestion} />
       ))}
     </ul>
   );
