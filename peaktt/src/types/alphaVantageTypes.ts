@@ -3,6 +3,9 @@ export interface StockSuggestion {
   name: string;
 }
 
+export type StockSuggestionsResponse = StockSuggestion[];
+
+
 export interface AlphaVantageSuggestion {
   "1. symbol": string;
   "2. name": string;
@@ -15,6 +18,7 @@ export interface AlphaVantageSuggestion {
   "9. matchScore": string;
 }
 
+
 export interface StockQuote {
   symbol: string;
   price: string;
@@ -26,3 +30,5 @@ export interface StockQuote {
   change: string;
   changePercent: string;
 }
+
+export type StockDetailsResponse = StockQuote;
