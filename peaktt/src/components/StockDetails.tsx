@@ -1,5 +1,3 @@
-// src/components/StockDetails.tsx
-
 import React from "react";
 import { StockQuote } from "@/types/alphaVantageTypes";
 
