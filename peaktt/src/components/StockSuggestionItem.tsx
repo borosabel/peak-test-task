@@ -2,10 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import {
-  StockSuggestion,
-  StockSuggestionItemProps,
-} from "@/types/alphaVantageTypes";
+import { StockSuggestionItemProps } from "@/types/alphaVantageTypes";
 
 const StockSuggestionItem: React.FC<StockSuggestionItemProps> = ({
   suggestion,
