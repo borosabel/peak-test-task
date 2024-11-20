@@ -63,7 +63,7 @@ const StocksPage: React.FC = () => {
           <h2 className="text-2xl font-semibold mb-4 text-[#f37a59]">
             Favorite Stocks
           </h2>
-          {favorites.size > 0 ? (
+          {favorites.size == 0 ? (
             <h2 className="text-lg font-semibold mb-4 text-[#f37a59]">
               You do not have favorite stocks yet. Add a stock to your favorites
               by clicking on the green button.
