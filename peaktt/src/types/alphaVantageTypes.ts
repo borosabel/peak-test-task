@@ -26,9 +26,16 @@ export interface StockQuote {
   change: string;
   changePercent: string;
 }
+
 export interface StockHistoryEntry {
   date: string;
   close: number;
+}
+
+export interface StockDetailsCardProps {
+  label: string;
+  value: string | number;
+  className?: string;
 }
 
 export interface TimeSeriesValue {

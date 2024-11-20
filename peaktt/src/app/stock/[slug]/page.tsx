@@ -1,5 +1,6 @@
 import React from "react";
 import StockDetails from "@/components/StockDetails";
+import StockChart from "@/components/StockChart";
 import {
   fetchStockDetails,
   fetchStockHistory,
@@ -7,69 +8,47 @@ import {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ timeframe?: string }>;
 }
 
-const StocksPage = async ({ params }: PageProps) => {
+const StocksPage = async ({ params, searchParams }: PageProps) => {
   const symbol = (await params).slug;
+  const timeFrame = (await searchParams)?.timeframe;
+
+  const timeframe: "daily" | "weekly" | "monthly" =
+    timeFrame === "weekly" || timeFrame === "monthly" ? timeFrame : "daily";
 
   if (!symbol) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        No stock selected.
-      </div>
-    );
+    return <div className="text-center mt-5">No stock selected.</div>;
   }
 
   let stock, history;
 
   try {
     stock = await fetchStockDetails(symbol);
-    history = await fetchStockHistory(symbol);
+    history = {
+      daily: await fetchStockHistory(symbol, "daily"),
+      weekly: await fetchStockHistory(symbol, "weekly"),
+      monthly: await fetchStockHistory(symbol, "monthly"),
+    };
   } catch (error) {
     console.error("Failed to fetch stock details:", error);
     return (
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <div className="text-center mt-5">
         Failed to load stock details for {symbol}. Please try again later.
       </div>
     );
   }
 
-  const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(
-    JSON.stringify({
-      type: "line",
-      data: {
-        labels: history.map((data) => data.date).reverse(),
-        datasets: [
-          {
-            label: `${symbol} Closing Price`,
-            data: history.map((data) => data.close).reverse(),
-            borderColor: "rgba(75, 192, 192, 1)",
-            fill: true,
-          },
-        ],
-      },
-    }),
-  )}`;
-
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        flexDirection: "row",
-        gap: "20px",
-        padding: "20px",
-      }}
-    >
-      <div style={{ flex: 1 }}>
-        <StockDetails stock={stock} />
-      </div>
-      <div style={{ flex: 2 }}>
-        <img
-          src={chartUrl}
-          alt={`${symbol} Price History`}
-          style={{ width: "100%", height: "auto" }}
-        />
+    <div className="min-h-screen bg-[#f6f2ec] p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="flex justify-center items-center">
+          <StockChart symbol={symbol} history={history} timeframe={timeframe} />
+        </div>
+        <div className="flex flex-col">
+          <StockDetails stock={stock} />
+        </div>
       </div>
     </div>
   );

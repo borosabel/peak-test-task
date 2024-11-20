@@ -6,16 +6,7 @@ import { useDebounceValue } from "usehooks-ts";
 import SuggestionsList from "@/components/SuggestionsList";
 import SearchField from "@/components/SearchField";
 import { StockSuggestion } from "@/types/alphaVantageTypes";
-
-const mockStockSuggestions: StockSuggestion[] = [
-  { symbol: "AAPL", name: "Apple Inc." },
-  { symbol: "GOOGL", name: "Alphabet Inc." },
-  { symbol: "TSLA", name: "Tesla Inc." },
-  { symbol: "MSFT", name: "Microsoft Corporation" },
-  { symbol: "AMZN", name: "Amazon.com, Inc." },
-  { symbol: "NFLX", name: "Netflix, Inc." },
-  { symbol: "META", name: "Meta Platforms, Inc." },
-];
+import { fetchStockSuggestions } from "@/service/alphaVantageApi";
 
 const StocksPage: React.FC = () => {
   const router = useRouter();
@@ -29,6 +20,9 @@ const StocksPage: React.FC = () => {
   const [favorites, setFavorites] = useState<Map<string, StockSuggestion>>(
     new Map(),
   );
+  const [suggestions, setSuggestions] = useState<StockSuggestion[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const storedFavorites = localStorage.getItem("favoriteStocks");
@@ -43,8 +37,27 @@ const StocksPage: React.FC = () => {
       const currentParams = new URLSearchParams(window.location.search);
       currentParams.set("query", debouncedQuery);
       router.replace(`/stocks?${currentParams.toString()}`);
+
+      const fetchSuggestions = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const results = await fetchStockSuggestions(debouncedQuery);
+          setSuggestions(results);
+        } catch (error) {
+          console.error("Failed to fetch stock suggestions:", error);
+          setError(
+            "Failed to fetch stock suggestions. Please try again later.",
+          );
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchSuggestions();
     } else {
       router.replace(`/stocks`);
+      setSuggestions([]);
     }
   }, [debouncedQuery, router]);
 
@@ -58,9 +71,7 @@ const StocksPage: React.FC = () => {
     if (favorites.has(symbol)) {
       updatedFavorites.delete(symbol);
     } else {
-      const newFavorite = mockStockSuggestions.find(
-        (stock) => stock.symbol === symbol,
-      );
+      const newFavorite = suggestions.find((stock) => stock.symbol === symbol);
       if (newFavorite) {
         updatedFavorites.set(symbol, newFavorite);
       }
@@ -71,12 +82,6 @@ const StocksPage: React.FC = () => {
       JSON.stringify(Array.from(updatedFavorites.values())),
     );
   };
-
-  const filteredStocks = mockStockSuggestions.filter(
-    (stock) =>
-      stock.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-      stock.symbol.toLowerCase().includes(debouncedQuery.toLowerCase()),
-  );
 
   return (
     <div className="min-h-screen bg-[#f6f2ec] p-8">
@@ -90,11 +95,17 @@ const StocksPage: React.FC = () => {
         />
 
         {debouncedQuery ? (
-          <SuggestionsList
-            stocks={filteredStocks}
-            favorites={Array.from(favorites.keys())}
-            onToggleFavorite={handleToggleFavorite}
-          />
+          isLoading ? (
+            <p className="mt-5 text-[#f37a59]">Loading...</p>
+          ) : error ? (
+            <p className="mt-5 text-[#f37a59]">{error}</p>
+          ) : (
+            <SuggestionsList
+              stocks={suggestions}
+              favorites={Array.from(favorites.keys())}
+              onToggleFavorite={handleToggleFavorite}
+            />
+          )
         ) : favorites.size > 0 ? (
           <div>
             <h2 className="text-2xl font-semibold mb-4 text-[#f37a59]">

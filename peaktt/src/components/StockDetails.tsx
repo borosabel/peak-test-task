@@ -1,5 +1,6 @@
 import React from "react";
 import { StockQuote } from "@/types/alphaVantageTypes";
+import StockDetailsCard from "@/components/StockDetailsCard";
 
 interface StockDetailsProps {
   stock: StockQuote;
@@ -7,29 +8,31 @@ interface StockDetailsProps {
 
 const StockDetails: React.FC<StockDetailsProps> = ({ stock }) => {
   return (
-    <div>
-      <h1>{stock.symbol}</h1>
-      <p>
-        <strong>Price:</strong> ${stock.price}
-      </p>
-      <p>
-        <strong>Open:</strong> ${stock.open}
-      </p>
-      <p>
-        <strong>High:</strong> ${stock.high}
-      </p>
-      <p>
-        <strong>Low:</strong> ${stock.low}
-      </p>
-      <p>
-        <strong>Volume:</strong> {stock.volume}
-      </p>
-      <p>
-        <strong>Previous Close:</strong> ${stock.previousClose}
-      </p>
-      <p>
-        <strong>Change:</strong> ${stock.change} ({stock.changePercent})
-      </p>
+    <div className="flex flex-col items-center gap-6">
+      <div className="text-center mb-4">
+        <img
+          src={`https://logo.clearbit.com/${stock.symbol.toLowerCase()}.com`}
+          alt={`${stock.symbol} Logo`}
+          className="w-20 h-20 mx-auto mb-4"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+        <StockDetailsCard label="Price" value={`$${stock.price}`} />
+        <StockDetailsCard label="Open" value={`$${stock.open}`} />
+        <StockDetailsCard label="High" value={`$${stock.high}`} />
+        <StockDetailsCard label="Low" value={`$${stock.low}`} />
+        <StockDetailsCard label="Volume" value={stock.volume} />
+        <StockDetailsCard
+          label="Previous Close"
+          value={`$${stock.previousClose}`}
+        />
+        <StockDetailsCard
+          label="Change"
+          value={`$${stock.change} (${stock.changePercent})`}
+          className="col-span-1 sm:col-span-2"
+        />
+      </div>
     </div>
   );
 };
