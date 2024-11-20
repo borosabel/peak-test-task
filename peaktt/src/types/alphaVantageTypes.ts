@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface StockSuggestion {
   symbol: string;
   name: string;
@@ -44,6 +46,39 @@ export interface TimeSeriesValue {
   "3. low": string;
   "4. close": string;
   "5. volume": string;
+}
+
+export interface StockSuggestionItemProps {
+  suggestion: StockSuggestion;
+  onToggleFavorite: (symbol: string) => void;
+  isFavorite: boolean;
+}
+
+export interface StockDetailsProps {
+  stock: StockQuote;
+}
+
+export interface SuggestionsListProps {
+  stocks: StockSuggestion[];
+  favorites: string[];
+  onToggleFavorite: (symbol: string) => void;
+}
+
+export interface SearchFieldProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClear: () => void;
+  placeholder?: string;
+}
+
+export interface StockChartProps {
+  symbol: string;
+  history: {
+    daily: Array<{ date: string; close: number }>;
+    weekly: Array<{ date: string; close: number }>;
+    monthly: Array<{ date: string; close: number }>;
+  };
+  timeframe: "daily" | "weekly" | "monthly";
 }
 
 export type StockHistoryResponse = StockHistoryEntry[];

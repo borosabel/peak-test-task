@@ -1,15 +1,6 @@
 import React from "react";
 import TimeframeButtons from "@/components/TimeframeButtons";
-
-interface StockChartProps {
-  symbol: string;
-  history: {
-    daily: Array<{ date: string; close: number }>;
-    weekly: Array<{ date: string; close: number }>;
-    monthly: Array<{ date: string; close: number }>;
-  };
-  timeframe: "daily" | "weekly" | "monthly";
-}
+import { StockChartProps } from "@/types/alphaVantageTypes";
 
 const StockChart: React.FC<StockChartProps> = ({
   symbol,

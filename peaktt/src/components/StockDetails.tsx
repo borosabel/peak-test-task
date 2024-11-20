@@ -1,10 +1,6 @@
 import React from "react";
-import { StockQuote } from "@/types/alphaVantageTypes";
 import StockDetailsCard from "@/components/StockDetailsCard";
-
-interface StockDetailsProps {
-  stock: StockQuote;
-}
+import { StockDetailsProps } from "@/types/alphaVantageTypes";
 
 const StockDetails: React.FC<StockDetailsProps> = ({ stock }) => {
   return (

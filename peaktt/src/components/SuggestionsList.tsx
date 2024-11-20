@@ -1,14 +1,8 @@
 "use client";
 
 import React from "react";
-import { StockSuggestion } from "@/types/alphaVantageTypes";
+import { SuggestionsListProps } from "@/types/alphaVantageTypes";
 import StockSuggestionItem from "@/components/StockSuggestionItem";
-
-interface SuggestionsListProps {
-  stocks: StockSuggestion[];
-  favorites: string[];
-  onToggleFavorite: (symbol: string) => void;
-}
 
 const SuggestionsList: React.FC<SuggestionsListProps> = ({
   stocks,

@@ -1,13 +1,7 @@
 "use client";
 
 import React from "react";
-
-interface SearchFieldProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClear: () => void;
-  placeholder?: string;
-}
+import { SearchFieldProps } from "@/types/alphaVantageTypes";
 
 const SearchField: React.FC<SearchFieldProps> = ({
   value,

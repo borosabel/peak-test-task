@@ -2,13 +2,10 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { StockSuggestion } from "@/types/alphaVantageTypes";
-
-interface StockSuggestionItemProps {
-  suggestion: StockSuggestion;
-  onToggleFavorite: (symbol: string) => void;
-  isFavorite: boolean;
-}
+import {
+  StockSuggestion,
+  StockSuggestionItemProps,
+} from "@/types/alphaVantageTypes";
 
 const StockSuggestionItem: React.FC<StockSuggestionItemProps> = ({
   suggestion,
