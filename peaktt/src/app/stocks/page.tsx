@@ -48,7 +48,6 @@ const StocksPage: React.FC = () => {
           onClear={() => handleInputChange("")}
           placeholder="Search for stocks"
         />
-
         {debouncedQuery && isLoading ? (
           <p className="mt-5 text-[#f37a59]">Loading...</p>
         ) : debouncedQuery && error ? (
@@ -60,19 +59,24 @@ const StocksPage: React.FC = () => {
             onToggleFavorite={handleToggleFavorite}
           />
         ) : null}
-
-        {favorites.size > 0 && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-semibold mb-4 text-[#f37a59]">
-              Favorite Stocks
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4 text-[#f37a59]">
+            Favorite Stocks
+          </h2>
+          {favorites.size > 0 ? (
+            <h2 className="text-lg font-semibold mb-4 text-[#f37a59]">
+              You do not have favorite stocks yet. Add a stock to your favorites
+              by clicking on the green button.
             </h2>
+          ) : (
             <SuggestionsList
               stocks={Array.from(favorites.values())}
               favorites={Array.from(favorites.keys())}
               onToggleFavorite={handleToggleFavorite}
             />
-          </div>
-        )}
+          )}
+        </div>
+        )
       </div>
     </div>
   );
