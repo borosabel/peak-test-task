@@ -34,6 +34,10 @@ const StocksPage: React.FC = () => {
     setDebouncedQuery(value);
   };
 
+  const handleToggleFavorite = (symbol: string) => {
+    toggleFavorite(symbol, suggestions);
+  };
+
   return (
     <div className="min-h-screen bg-[#f6f2ec] p-8">
       <div className="max-w-4xl mx-auto">
@@ -45,33 +49,29 @@ const StocksPage: React.FC = () => {
           placeholder="Search for stocks"
         />
 
-        {debouncedQuery ? (
-          isLoading ? (
-            <p className="mt-5 text-[#f37a59]">Loading...</p>
-          ) : error ? (
-            <p className="mt-5 text-[#f37a59]">{error}</p>
-          ) : (
-            <SuggestionsList
-              stocks={suggestions}
-              favorites={Array.from(favorites.keys())}
-              onToggleFavorite={(symbol) => toggleFavorite(symbol, suggestions)}
-            />
-          )
-        ) : Object.keys(favorites).length > 0 ? (
-          <div>
+        {debouncedQuery && isLoading ? (
+          <p className="mt-5 text-[#f37a59]">Loading...</p>
+        ) : debouncedQuery && error ? (
+          <p className="mt-5 text-[#f37a59]">{error}</p>
+        ) : debouncedQuery ? (
+          <SuggestionsList
+            stocks={suggestions}
+            favorites={Array.from(favorites.keys())}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        ) : null}
+
+        {favorites.size > 0 && (
+          <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-4 text-[#f37a59]">
               Favorite Stocks
             </h2>
             <SuggestionsList
               stocks={Array.from(favorites.values())}
               favorites={Array.from(favorites.keys())}
-              onToggleFavorite={(symbol) => toggleFavorite(symbol, suggestions)}
+              onToggleFavorite={handleToggleFavorite}
             />
           </div>
-        ) : (
-          <p className="mt-5 text-[#f37a59]">
-            Use the search bar above to find stocks.
-          </p>
         )}
       </div>
     </div>

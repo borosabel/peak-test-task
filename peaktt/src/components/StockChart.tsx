@@ -9,27 +9,43 @@ const StockChart: React.FC<StockChartProps> = ({
 }) => {
   const QUICKCHART_URL = process.env.NEXT_PUBLIC_QUICKCHART_URL;
 
+  const currentHistory = history[timeframe];
+
+  if (
+    !currentHistory.success ||
+    !currentHistory.data ||
+    currentHistory.data.length === 0
+  ) {
+    return (
+      <div className="text-center mt-5">
+        No historical data available for {timeframe} timeframe.
+      </div>
+    );
+  }
+
   const isPriceRising =
-    history[timeframe][0]?.close <
-    history[timeframe][history[timeframe].length - 1]?.close;
+    currentHistory.data[0]?.close <
+    currentHistory.data[currentHistory.data.length - 1]?.close;
+
+  const chartConfig = {
+    type: "line",
+    data: {
+      labels: currentHistory.data.map((data) => data.date).reverse(),
+      datasets: [
+        {
+          label: `${symbol} Closing Price (${timeframe})`,
+          data: currentHistory.data.map((data) => data.close).reverse(),
+          borderColor: isPriceRising
+            ? "rgba(75, 192, 75, 1)"
+            : "rgba(192, 75, 75, 1)",
+          fill: true,
+        },
+      ],
+    },
+  };
 
   const chartUrl = `${QUICKCHART_URL}?c=${encodeURIComponent(
-    JSON.stringify({
-      type: "line",
-      data: {
-        labels: history[timeframe].map((data) => data.date).reverse(),
-        datasets: [
-          {
-            label: `${symbol} Closing Price (${timeframe})`,
-            data: history[timeframe].map((data) => data.close).reverse(),
-            borderColor: isPriceRising
-              ? "rgba(75, 192, 75, 1)"
-              : "rgba(192, 75, 75, 1)",
-            fill: true,
-          },
-        ],
-      },
-    }),
+    JSON.stringify(chartConfig),
   )}`;
 
   return (

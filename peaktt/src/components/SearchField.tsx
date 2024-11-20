@@ -17,7 +17,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full p-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007bff] pr-10"
+          className="w-full p-3 border text-black border-gray-400 rounded-md pr-10"
         />
         {value && (
           <button

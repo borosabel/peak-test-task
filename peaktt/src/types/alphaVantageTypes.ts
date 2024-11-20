@@ -74,9 +74,9 @@ export interface SearchFieldProps {
 export interface StockChartProps {
   symbol: string;
   history: {
-    daily: Array<{ date: string; close: number }>;
-    weekly: Array<{ date: string; close: number }>;
-    monthly: Array<{ date: string; close: number }>;
+    daily: { success: boolean; data: StockHistoryResponse | null };
+    weekly: { success: boolean; data: StockHistoryResponse | null };
+    monthly: { success: boolean; data: StockHistoryResponse | null };
   };
   timeframe: "daily" | "weekly" | "monthly";
 }
